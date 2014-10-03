@@ -17,14 +17,13 @@ import android.widget.TextView;
 
 public class GameView extends View {
     private Bitmap image;
-    private ArrayList<Point> strokePoints = new ArrayList<Point>();
+    private Stroke stroke = new Stroke();
     private boolean killed = false;
     private boolean newUnicorn = true;
     private Point imagePoint = new Point(-150,100);
     private int score = 0;
     private int yChange = 0;
-    private static final int lineColor = Color.RED;
-    private static final int lineWidth = 10;
+    
     public long startTime;
     public long endTime;
 
@@ -72,15 +71,15 @@ public class GameView extends View {
 		canvas.drawBitmap(image, imagePoint.x, imagePoint.y, null);
     	
 		// draws the stroke
-    	if (strokePoints.size() > 1) {
-    		for (int i = 0; i < strokePoints.size()-1; i++) {
-    			int startX = strokePoints.get(i).x;
-    			int stopX = strokePoints.get(i+1).x;
-    			int startY = strokePoints.get(i).y;
-    			int stopY = strokePoints.get(i+1).y;
+    	if (stroke.countPoints() > 1) {
+    		for (int i = 0; i < stroke.countPoints() - 1; i++) {
+    			int startX = stroke.getX(i);
+    			int stopX = stroke.getX(i + 1);
+    			int startY = stroke.getY(i);
+    			int stopY = stroke.getY(i + 1);
     			Paint paint = new Paint();
-    			paint.setColor(lineColor);
-    			paint.setStrokeWidth(lineWidth);
+    			paint.setColor(Stroke.getColor());
+    			paint.setStrokeWidth(Stroke.getWidth());
     			canvas.drawLine(startX, startY, stopX, stopY, paint);
     		}
     	}
@@ -93,13 +92,13 @@ public class GameView extends View {
     public boolean onTouchEvent(MotionEvent event) {
     	
     	if (event.getAction() == MotionEvent.ACTION_DOWN) {
-    		strokePoints.add(new Point((int)event.getX(),(int)event.getY()));
+    		stroke.addPoint((int)event.getX(), (int)event.getY());
     	}
     	else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-    		strokePoints.add(new Point((int)event.getX(),(int)event.getY()));
+    		stroke.addPoint((int)event.getX(), (int)event.getY());
     	}
     	else if (event.getAction() == MotionEvent.ACTION_UP) {
-    		strokePoints.clear();
+    		stroke.clearPoints();
     	}
     	else {
     		return false;

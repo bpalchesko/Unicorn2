@@ -8,7 +8,7 @@ import android.graphics.Point;
 public class Stroke {
 
 	private ArrayList<Point> points;
-	private static final int lineColor = Color.BLUE; //TODO Red
+	private static final int lineColor = Color.YELLOW; //TODO Red
     private static final int lineWidth = 10;
     
     public Stroke() {

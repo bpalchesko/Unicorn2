@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.view.View;
 
 public class Image {
 	
@@ -12,8 +11,8 @@ public class Image {
 	private Bitmap explode;
 	private Point imagePoint;
 	
-	public Image(Resources res) {
-		imagePoint = new Point(-150,100);
+	public Image(Resources res, int x, int y) {
+		imagePoint = new Point(x, y);
 		unicorn = BitmapFactory.decodeResource(res, R.drawable.unicorn);
 		unicorn = Bitmap.createScaledBitmap(unicorn, 150, 150, false);
 		explode = BitmapFactory.decodeResource(res, R.drawable.explosion);

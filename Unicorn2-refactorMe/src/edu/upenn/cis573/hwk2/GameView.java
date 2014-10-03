@@ -12,13 +12,12 @@ import android.widget.TextView;
 
 
 public class GameView extends View {
-    //private Bitmap image;
     private Stroke stroke = new Stroke();
     private boolean killed = false;
     private boolean newUnicorn = true;
     private int score = 0;
     private int yChange = 0;
-    private Image unicorn = new Image(getResources());
+    private Image unicorn = new Image(getResources(), -150, 100);
     
     public long startTime;
     public long endTime;
@@ -48,17 +47,16 @@ public class GameView extends View {
     		killed = false;
     	}
 
+    	// draws the unicorn at the specified point
+    	canvas.drawBitmap(unicorn.getImage(killed), unicorn.getX(), unicorn.getY(), null);
+    	
 		// show the exploding image when the unicorn is killed
     	if (killed) {
-    		canvas.drawBitmap(unicorn.getImage(killed), unicorn.getX(), unicorn.getY(), null);
     		newUnicorn = true;
     		try { Thread.sleep(10); } catch (Exception e) { }
     		invalidate();
     		return;
     	}
-
-    	// draws the unicorn at the specified point
-		canvas.drawBitmap(unicorn.getImage(killed), unicorn.getX(), unicorn.getY(), null);
     	
 		// draws the stroke
     	if (stroke.countPoints() > 1) {
@@ -109,46 +107,17 @@ public class GameView extends View {
     	
     	return true;
     }    
-
     
-    /*
-     * This inner class is responsible for making the unicorn appear to move.
-     * When "exec" is called on an object of this class, "doInBackground" gets
-     * called in a background thread. It just waits 10ms and then updates the
-     * image's position. Then "onPostExecute" is called.
-     */
-    class BackgroundDrawingTask extends AsyncTask<Integer, Void, Integer> {
-    	
-    	// this method gets run in the background
-    	protected Integer doInBackground(Integer... args) {
-    		try { 
-    			// note: you can change these values to make the unicorn go faster/slower
-    			Thread.sleep(10);
-    			unicorn.setX(unicorn.getX() + 10);
-    			unicorn.setY(unicorn.getY() + yChange);
-    		} 
-    		catch (Exception e) { }
-    		// the return value is passed to "onPostExecute" but isn't actually used here
-    		return 1; 
-    	}
-    	
-    	// this method gets run in the UI thread
-    	protected void onPostExecute(Integer result) {
-    		// redraw the View
-    		invalidate();
-    		if (score < 10) {
-    			// need to start a new thread to make the unicorn keep moving
-    			BackgroundDrawingTask task = new BackgroundDrawingTask();
-    			task.execute();
-    		}
-    		else {
-    			// game over, man!
-    			endTime = System.currentTimeMillis();
-    			// these methods are deprecated but it's okay to use them... probably.
-    			GameActivity.instance.removeDialog(1);
-    			GameActivity.instance.showDialog(1);
-    		}
-    	}    	
+    public int getScore() {
+    	return score;
+    }
+    
+    public Image getUnicorn() {
+    	return unicorn;
+    }
+    
+    public int getYChange() {
+    	return yChange;
     }
 
 }

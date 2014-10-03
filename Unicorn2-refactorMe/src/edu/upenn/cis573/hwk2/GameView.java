@@ -1,11 +1,7 @@
 package edu.upenn.cis573.hwk2;
 
-import java.util.ArrayList;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.AsyncTask;
@@ -16,13 +12,13 @@ import android.widget.TextView;
 
 
 public class GameView extends View {
-    private Bitmap image;
+    //private Bitmap image;
     private Stroke stroke = new Stroke();
     private boolean killed = false;
     private boolean newUnicorn = true;
-    private Point imagePoint = new Point(-150,100);
     private int score = 0;
     private int yChange = 0;
+    private Image unicorn = new Image(getResources());
     
     public long startTime;
     public long endTime;
@@ -30,15 +26,11 @@ public class GameView extends View {
     public GameView(Context context) {
 	    super(context);
 	    setBackgroundResource(R.drawable.space);
-	    image = BitmapFactory.decodeResource(getResources(), R.drawable.unicorn);
-	    image = Bitmap.createScaledBitmap(image, 150, 150, false);
     }
     
     public GameView(Context context, AttributeSet attributeSet) {
     	super(context, attributeSet);
 	    setBackgroundResource(R.drawable.space);
-	    image = BitmapFactory.decodeResource(getResources(), R.drawable.unicorn);
-	    image = Bitmap.createScaledBitmap(image, 150, 150, false);
     }
     
     /*
@@ -48,9 +40,9 @@ public class GameView extends View {
     protected void onDraw(Canvas canvas) {    	
 
     	// resets the position of the unicorn if one is killed or reaches the right edge
-    	if (newUnicorn || imagePoint.x >= this.getWidth()) {
-    		imagePoint.x = -150;
-    		imagePoint.y = (int)(Math.random() * 200 + 200);
+    	if (newUnicorn || unicorn.getX() >= this.getWidth()) {
+    		unicorn.setX(-150);
+    		unicorn.setY((int)(Math.random() * 200 + 200));
     		yChange = (int)(10 - Math.random() * 20);
     		newUnicorn = false;
     		killed = false;
@@ -58,9 +50,7 @@ public class GameView extends View {
 
 		// show the exploding image when the unicorn is killed
     	if (killed) {
-    		Bitmap explode = BitmapFactory.decodeResource(getResources(), R.drawable.explosion);
-    	    explode = Bitmap.createScaledBitmap(explode, 150, 150, false);
-    		canvas.drawBitmap(explode, imagePoint.x, imagePoint.y, null);
+    		canvas.drawBitmap(unicorn.getImage(killed), unicorn.getX(), unicorn.getY(), null);
     		newUnicorn = true;
     		try { Thread.sleep(10); } catch (Exception e) { }
     		invalidate();
@@ -68,7 +58,7 @@ public class GameView extends View {
     	}
 
     	// draws the unicorn at the specified point
-		canvas.drawBitmap(image, imagePoint.x, imagePoint.y, null);
+		canvas.drawBitmap(unicorn.getImage(killed), unicorn.getX(), unicorn.getY(), null);
     	
 		// draws the stroke
     	if (stroke.countPoints() > 1) {
@@ -105,13 +95,10 @@ public class GameView extends View {
     	}
     	
     	// see if the point is within the boundary of the image
-    	int width = image.getWidth();
-    	int height = image.getHeight();
-    	float x = event.getX();
-    	float y = event.getY();
+    	Point touch = new Point((int)event.getX(), (int)event.getY());
     	// the !killed thing here is to prevent a "double-kill" that could occur
     	// while the "explosion" image is being shown
-    	if (!killed && x > imagePoint.x && x < imagePoint.x + width && y > imagePoint.y && y < imagePoint.y + height) {
+    	if (!killed && unicorn.isCollision(touch)) {
     		killed = true;
     		score++;
     		((TextView)(GameActivity.instance.getScoreboard())).setText(""+score);
@@ -136,9 +123,9 @@ public class GameView extends View {
     	protected Integer doInBackground(Integer... args) {
     		try { 
     			// note: you can change these values to make the unicorn go faster/slower
-    			Thread.sleep(10); 
-    			imagePoint.x += 10; 
-    			imagePoint.y += yChange; 
+    			Thread.sleep(10);
+    			unicorn.setX(unicorn.getX() + 10);
+    			unicorn.setY(unicorn.getY() + yChange);
     		} 
     		catch (Exception e) { }
     		// the return value is passed to "onPostExecute" but isn't actually used here

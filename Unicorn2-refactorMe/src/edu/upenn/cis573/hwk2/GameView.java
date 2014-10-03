@@ -19,9 +19,6 @@ public class GameView extends View {
     private int yChange = 0;
     private Image unicorn = new Image(getResources(), -150, 100);
     private Activity parentActivity;
-    
-    public long startTime;
-    public long endTime;
 
     public GameView(Context context) {
 	    super(context);
@@ -111,24 +108,43 @@ public class GameView extends View {
     	return true;
     }    
     
+    /**
+     * Updates the score display if the parent is of class GameActivity.
+     */
     public void updateScoreboard() {
     	if(parentActivity instanceof GameActivity) {
     		((TextView)(((GameActivity)parentActivity).getScoreboard())).setText(""+score);
     	}
     }
     
+    /**
+     * Yields the parent activity.
+     * @return parent activity
+     */
     public Activity getParentActivity() {
     	return parentActivity;
     }
     
+    /**
+     * Yields the player's current score.
+     * @return score
+     */
     public int getScore() {
     	return score;
     }
     
+    /**
+     * Yields the unicorn image.
+     * @return unicorn
+     */
     public Image getUnicorn() {
     	return unicorn;
     }
     
+    /**
+     * Yields the current unicorn trajectory.
+     * @return yChange
+     */
     public int getYChange() {
     	return yChange;
     }

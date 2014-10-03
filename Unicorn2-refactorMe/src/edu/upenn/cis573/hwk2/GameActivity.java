@@ -10,6 +10,8 @@ public class GameActivity extends UnicornActivity {
 	
 	// keeps track of the best time so far
 	private static float bestTime = 10000000;
+	public long startTime;
+    public long endTime;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,7 @@ public class GameActivity extends UnicornActivity {
 	    	               GameView gv = (GameView)findViewById(R.id.gameView);
 	    	               BackgroundDrawingTask t = new BackgroundDrawingTask(gv);
 	    	               t.execute();
-	    	               gv.startTime = System.currentTimeMillis();
+	    	               startTime = System.currentTimeMillis();
 	    	           }
 	    	         });
     		return builder.create();
@@ -54,7 +56,7 @@ public class GameActivity extends UnicornActivity {
 	    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
             // figure out which message to display
             GameView gv = (GameView)findViewById(R.id.gameView);
-	    	long time = gv.endTime - gv.startTime;
+	    	long time = endTime - startTime;
 	    	// a little magic to convert to tenths of a second
 	    	float displayTime = (time / 100) / (float)10.0;
 	    	if (bestTime == 10000000) {

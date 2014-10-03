@@ -17,6 +17,7 @@ public class BackgroundDrawingTask extends AsyncTask<Integer, Void, Integer> {
 		this.gameView = gameView;
 		this.unicorn = gameView.getUnicorn();
 	}
+	
 	// this method gets run in the background
 	protected Integer doInBackground(Integer... args) {
 		try { 
@@ -42,7 +43,10 @@ public class BackgroundDrawingTask extends AsyncTask<Integer, Void, Integer> {
 		}
 		else {
 			// game over, man!
-			gameView.endTime = System.currentTimeMillis();
+			if (gameView.getParentActivity() instanceof GameActivity) {
+				((GameActivity) gameView.getParentActivity()).endTime = System
+						.currentTimeMillis();
+			}
 			// these methods are deprecated but it's okay to use them... probably.
 			gameView.getParentActivity().removeDialog(1);
 			gameView.getParentActivity().showDialog(1);

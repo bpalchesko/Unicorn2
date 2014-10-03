@@ -1,10 +1,10 @@
 package edu.upenn.cis573.hwk2;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,6 +18,7 @@ public class GameView extends View {
     private int score = 0;
     private int yChange = 0;
     private Image unicorn = new Image(getResources(), -150, 100);
+    private Activity parentActivity;
     
     public long startTime;
     public long endTime;
@@ -25,11 +26,13 @@ public class GameView extends View {
     public GameView(Context context) {
 	    super(context);
 	    setBackgroundResource(R.drawable.space);
+	    parentActivity = (Activity)context;
     }
     
     public GameView(Context context, AttributeSet attributeSet) {
     	super(context, attributeSet);
 	    setBackgroundResource(R.drawable.space);
+	    parentActivity = (Activity)context;
     }
     
     /*
@@ -99,7 +102,7 @@ public class GameView extends View {
     	if (!killed && unicorn.isCollision(touch)) {
     		killed = true;
     		score++;
-    		((TextView)(GameActivity.instance.getScoreboard())).setText(""+score);
+    		updateScoreboard();
     	}
     	
     	// forces a redraw of the View
@@ -107,6 +110,16 @@ public class GameView extends View {
     	
     	return true;
     }    
+    
+    public void updateScoreboard() {
+    	if(parentActivity instanceof GameActivity) {
+    		((TextView)(((GameActivity)parentActivity).getScoreboard())).setText(""+score);
+    	}
+    }
+    
+    public Activity getParentActivity() {
+    	return parentActivity;
+    }
     
     public int getScore() {
     	return score;
